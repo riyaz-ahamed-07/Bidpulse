@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BidPulse Live Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #222; color: #fff; }
+        .console { background: #000; color: #0f0; padding: 15px; font-family: monospace; height: 300px; overflow-y: scroll; border: 1px solid #555; }
+        input, button { padding: 10px; margin: 5px 0; font-size: 16px; }
+        button { cursor: pointer; background: #4CAF50; color: white; border: none; }
+        button.stop { background: #f44336; }
+    </style>
+</head>
+<body>
+
+    <h2>📡 BidPulse Real-Time Radar</h2>
+    
+    <div>
+        <label>Listen to Auction ID: </label>
+        <input type="text" id="auctionId" value="1" size="5">
+        <button onclick="connect()">Connect</button>
+        <button class="stop" onclick="disconnect()">Disconnect</button>
+    </div>
+
+    <div class="console" id="messageConsole">
+        </div>
+
+    <script>
+        let stompClient = null;
+
+        function connect() {
+            const auctionId = document.getElementById('auctionId').value;
+            log("Attempting to connect to server...");
+
+            // Connect to your Spring Boot /ws endpoint
+            const socket = new SockJS('http://localhost:8080/ws');
+            stompClient = Stomp.over(socket);
+            
+            // Turn off massive debug logs in the browser console
+            stompClient.debug = null; 
+
+            stompClient.connect({}, function (frame) {
+                log("✅ CONNECTED! Listening for updates on Auction #" + auctionId);
+                
+                // 1. Listen for new bids
+                stompClient.subscribe('/topic/auction.' + auctionId, function (message) {
+                    log("💰 NEW BID: " + message.body);
+                });
+
+                // 2. Listen for status changes (Start/End)
+                stompClient.subscribe('/topic/auction.' + auctionId + '.events', function (message) {
+                    log("⚡ EVENT: " + message.body);
+                });
+
+            }, function(error) {
+                log("❌ ERROR: " + error);
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            log("🛑 Disconnected.");
+        }
+
+        function log(message) {
+            const consoleDiv = document.getElementById('messageConsole');
+            const time = new Date().toLocaleTimeString();
+            consoleDiv.innerHTML += `<div>[${time}] ${message}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight; // Auto-scroll to bottom
+        }
+    </script>
+</body>
+</html>
