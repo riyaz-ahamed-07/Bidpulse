@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
     headers: { 'Content-Type': 'application/json' },
 });
 
@@ -32,7 +32,7 @@ apiClient.interceptors.response.use(
 
                 // Ask Spring Boot for a new token pair
                 // (Make sure this matches your actual backend refresh endpoint!)
-                const response = await axios.post('http://localhost:8080/api/auth/refresh', {
+                const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh`, {
                     refreshToken: refreshToken
                 });
 
