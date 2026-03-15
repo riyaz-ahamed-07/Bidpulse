@@ -24,7 +24,8 @@ export default function RegisterPage() {
       }, 2000);
 
     } catch (err) {
-      setStatus('❌ Registration failed. Email might already exist in the mainframe.');
+      const errorMsg = err.response?.data?.message || err.message || 'Registration failed. Check your connection or email.';
+      setStatus(`❌ ${errorMsg}`);
       setIsLoading(false);
     }
   };
