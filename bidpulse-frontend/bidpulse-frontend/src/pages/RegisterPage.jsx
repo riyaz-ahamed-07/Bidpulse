@@ -50,34 +50,43 @@ export default function RegisterPage() {
 
         <form onSubmit={handleRegister} className="space-y-5">
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Operative Name</label>
+            <label htmlFor="name" className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Operative Name</label>
             <input 
+              id="name"
+              name="name"
               type="text" 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
               placeholder="John Doe" 
+              autoComplete="name"
               required 
               className="input-field"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email Address</label>
+            <label htmlFor="email" className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email Address</label>
             <input 
+              id="email"
+              name="email"
               type="email" 
               value={email} 
               onChange={(e) => setEmail(e.target.value)} 
               placeholder="agent@bidpulse.com" 
+              autoComplete="email"
               required 
               className="input-field"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Secure Password</label>
+            <label htmlFor="password" className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Secure Password</label>
             <input 
+              id="password"
+              name="password"
               type="password" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
               placeholder="••••••••" 
+              autoComplete="new-password"
               required 
               className="input-field"
             />

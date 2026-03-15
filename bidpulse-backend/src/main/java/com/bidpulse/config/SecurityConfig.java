@@ -84,21 +84,35 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Allow React development servers and production Vercel frontend
-        configuration.setAllowedOrigins(List.of(
+        // Using allowedOriginPatterns for more flexible wildcard support if needed
+        configuration.setAllowedOriginPatterns(List.of(
             "http://localhost:5173", 
             "http://localhost:3000",
             "https://bid-pul-se.vercel.app"
         ));
 
         // Allow all standard HTTP methods
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
 
-        // Allow the headers we need (like Authorization for our Bearer token)
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-User-Id"));
+        // Allow the headers we need
+        configuration.setAllowedHeaders(List.of(
+            "Authorization", 
+            "Content-Type", 
+            "X-User-Id", 
+            "Cache-Control", 
+            "Origin", 
+            "Accept", 
+            "X-Requested-With"
+        ));
+        
+        // Expose headers if needed for frontend to read
+        configuration.setExposedHeaders(List.of("Authorization"));
+        
         configuration.setAllowCredentials(true); 
+        configuration.setMaxAge(3600L); // Cache preflight for 1 hour
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply these rules to all endpoints
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
